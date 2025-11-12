@@ -1,33 +1,41 @@
 import SwiftUI
 
 struct CrewMemberContactView: View {
-    @Binding var crewMember: CrewMember
+    @Binding var member: CrewMember
 
     var body: some View {
         Form {
-            Section(header: Text("Contact Info")) {
-                TextField("Full Name", text: $crewMember.name)
-                TextField("Position", text: $crewMember.position)
-                TextField("Company", text: $crewMember.company)
-                TextField("Phone", text: $crewMember.phone)
-                TextField("Email", text: $crewMember.email)
+            Section(header: Text("Name")) {
+                TextField("First Name", text: $member.firstName)
+                TextField("Last Name", text: $member.lastName)
+            }
+            
+            Section(header: Text("Contact")) {
+                TextField("Email", text: $member.email)
+                TextField("Phone", text: $member.phone)
+            }
+            
+            Section(header: Text("Work Info")) {
+                TextField("Position", text: $member.position)
+                TextField("Company", text: $member.company)
             }
         }
-        .navigationTitle("Edit Crew Member")
+        .navigationTitle(member.displayName)
     }
 }
 
 struct CrewMemberContactView_Previews: PreviewProvider {
-    @State static var crew = CrewMember(
+    @State static var sampleMember = CrewMember(
         id: UUID(),
-        name: "John Doe",
-        position: "Technician",
-        company: "PSI",
+        firstName: "John",
+        lastName: "Doe",
+        email: "john.doe@example.com",
         phone: "555-1234",
-        email: "john@example.com"
+        position: "Technician",
+        company: "PSI"
     )
 
     static var previews: some View {
-        CrewMemberContactView(crewMember: $crew)
+        CrewMemberContactView(member: $sampleMember)
     }
 }

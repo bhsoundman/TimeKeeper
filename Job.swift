@@ -1,65 +1,32 @@
 import Foundation
 
-struct Job: Identifiable, Codable, Equatable, Hashable {
+// MARK: - Job
+struct Job: Codable, Equatable, Hashable, Identifiable {
     var id: UUID = UUID()
     var name: String
     var client: String
     var startDate: Date
     var days: [JobDay]
-    
-    // Optional helper for hash/equality (if needed)
-    static func == (lhs: Job, rhs: Job) -> Bool {
-        return lhs.id == rhs.id
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
+    var crew: [CrewEntry]
 }
 
-struct JobDay: Identifiable, Codable, Equatable, Hashable {
-    var id: UUID = UUID()
-    var date: Date
-    var crewEntries: [CrewEntry] = []
-    
-    static func == (lhs: JobDay, rhs: JobDay) -> Bool {
-        return lhs.id == rhs.id
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-}
-
-struct CrewEntry: Identifiable, Codable, Equatable, Hashable {
+// MARK: - CrewEntry
+struct CrewEntry: Codable, Equatable, Hashable, Identifiable {
     var id: UUID = UUID()
     var member: CrewMember
-    var timeStamps: [TimeStamp] = []
-    
-    static func == (lhs: CrewEntry, rhs: CrewEntry) -> Bool {
-        return lhs.id == rhs.id
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
+    var position: String
 }
 
-struct TimeStamp: Identifiable, Codable, Equatable, Hashable {
+// MARK: - JobDay
+struct JobDay: Codable, Equatable, Hashable, Identifiable {
     var id: UUID = UUID()
-    var type: StampType
     var date: Date
+    var timeStamps: [TimeStamp]
     
-    static func == (lhs: TimeStamp, rhs: TimeStamp) -> Bool {
-        return lhs.id == rhs.id
+    // Optional helper to format date for display
+    var formattedDate: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
     }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-}
-
-enum StampType: String, Codable {
-    case clockIn
-    case clockOut
 }
