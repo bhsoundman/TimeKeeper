@@ -11,11 +11,9 @@ struct SplashView: View {
                     .font(.largeTitle)
                     .padding()
 
-                NavigationLink(
-                    value: isActive,
-                    label: { Text("Enter") }
-                )
-                .onTapGesture { isActive = true }
+                Button("Enter") {
+                    isActive = true
+                }
             }
             .navigationDestination(isPresented: $isActive) {
                 DashboardView(dataStore: dataStore)
@@ -31,3 +29,4 @@ struct SplashView_Previews: PreviewProvider {
         SplashView(dataStore: dataStore)
     }
 }
+

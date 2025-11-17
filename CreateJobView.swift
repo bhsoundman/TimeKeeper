@@ -2,45 +2,77 @@ import SwiftUI
 
 struct CreateJobView: View {
     @ObservedObject var dataStore: DataStore
-    @State private var client = ""
-    @State private var projectName = ""
-    @State private var numberOfDays = 1
+
+    @State private var jobName = ""
+    @State private var clientName = ""
     @State private var startDate = Date()
+    @State private var numberOfDays = 1
+
+    @State private var showCreatedAlert = false
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         Form {
             Section("Job Info") {
-                TextField("Client", text: $client)
-                TextField("Project Name", text: $projectName)
+                TextField("Job Name", text: $jobName)
+                TextField("Client Name", text: $clientName)
                 DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
-                Stepper("Days: \(numberOfDays)", value: $numberOfDays, in: 1...30)
             }
 
-            Button("Create Job") {
-                let newJob = Job(
-                    client: client,
-                    projectName: projectName,
-                    days: generateJobDays(startDate: startDate, numberOfDays: numberOfDays)
-                )
-                dataStore.jobs.append(newJob)
+            Section("Schedule") {
+                Stepper("Number of Days: \(numberOfDays)", value: $numberOfDays, in: 1...30)
+            }
+
+            Section {
+                Button("Create Job") {
+                    createJob()
+                }
+                .disabled(jobName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
         }
-        .navigationTitle("New Job")
+        .navigationTitle("Create Job")
+        .alert("Job Created", isPresented: $showCreatedAlert) {
+            Button("OK") {
+                // close this view and return to previous screen
+                dismiss()
+            }
+        } message: {
+            Text("Your new job has been successfully created.")
+        }
     }
 
-    private func generateJobDays(startDate: Date, numberOfDays: Int) -> [JobDay] {
-        (0..<numberOfDays).map { offset in
-            JobDay(date: Calendar.current.date(byAdding: .day, value: offset, to: startDate) ?? startDate)
-        }
+    // MARK: - Actions
+    private func createJob() {
+        // build the days array using the helper
+        let jobDaysArray = Job.generateJobDays(startDate: startDate, numberOfDays: numberOfDays)
+
+        // create the job (match your Job initializer)
+        let newJob = Job(
+            id: UUID(),
+            name: jobName.trimmingCharacters(in: .whitespacesAndNewlines),
+            client: clientName.trimmingCharacters(in: .whitespacesAndNewlines),
+            startDate: startDate,
+            endDate: nil,
+            days: jobDaysArray,
+            crew: []
+        )
+
+        // save to datastore (this also calls saveJobs() per your DataStore)
+        dataStore.addJob(newJob)
+
+        // show confirmation UI
+        showCreatedAlert = true
     }
 }
 
 // MARK: - Preview
 struct CreateJobView_Previews: PreviewProvider {
     @StateObject static var dataStore = DataStore()
+
     static var previews: some View {
         NavigationStack {
             CreateJobView(dataStore: dataStore)
         }
     }
 }
+

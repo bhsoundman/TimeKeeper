@@ -14,6 +14,8 @@ class DataStore: ObservableObject {
     // MARK: Published properties
     @Published var crewMembers: [CrewMember] = []
     @Published var jobs: [Job] = []
+    @Published var archivedCrewMembers: [CrewMember] = []
+
 
     // MARK: Initialization
     init() {
@@ -93,7 +95,11 @@ class DataStore: ObservableObject {
             saveJobs()
         }
     }
-    
+    func deleteJob(at offsets: IndexSet) {
+        jobs.remove(atOffsets: offsets)
+        saveJobs()
+    }
+
     func removeJob(_ job: Job) {
         if let index = jobs.firstIndex(where: { $0.id == job.id }) {
             jobs.remove(at: index)

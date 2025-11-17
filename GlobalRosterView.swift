@@ -27,10 +27,18 @@ struct GlobalRosterView: View {
             }
             .sheet(item: $editingMember) { member in
                 if let index = dataStore.crewMembers.firstIndex(where: { $0.id == member.id }) {
-                    CrewMemberContactView(crewMember: $dataStore.crewMembers[index])
+                    CrewMemberContactView(member: $dataStore.crewMembers[index])
                 }
             }
             .navigationTitle("Global Roster")
         }
+    }
+}
+
+// MARK: - Preview
+struct GlobalRosterView_Previews: PreviewProvider {
+    @StateObject static var dataStore = DataStore()
+    static var previews: some View {
+        GlobalRosterView(dataStore: dataStore)
     }
 }

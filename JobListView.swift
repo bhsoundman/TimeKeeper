@@ -5,13 +5,20 @@ struct JobListView: View {
 
     var body: some View {
         List {
-            ForEach(dataStore.jobs) { job in
-                NavigationLink(destination: JobDetailView(dataStore: dataStore, job: job)) {
+            ForEach(dataStore.jobs.indices, id: \.self) { index in
+                NavigationLink(destination: JobDetailView(
+                    dataStore: dataStore,
+                    job: $dataStore.jobs[index]
+                )) {
                     VStack(alignment: .leading) {
-                        Text(job.client)
-                        Text(job.projectName).font(.subheadline).foregroundColor(.gray)
+                        Text(dataStore.jobs[index].name)
+                        Text(dataStore.jobs[index].client)
+                            .font(.subheadline)
                     }
                 }
+            }
+            .onDelete { indexSet in
+                dataStore.jobs.remove(atOffsets: indexSet)
             }
         }
         .navigationTitle("Jobs")
@@ -27,3 +34,4 @@ struct JobListView_Previews: PreviewProvider {
         }
     }
 }
+

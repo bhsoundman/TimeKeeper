@@ -2,28 +2,26 @@ import SwiftUI
 
 struct ReportView: View {
     @ObservedObject var dataStore: DataStore
+    @State private var searchText = ""
 
     var body: some View {
-        List {
-            ForEach(dataStore.jobs) { job in
-                VStack(alignment: .leading) {
-                    Text(job.projectName)
-                        .font(.headline)
-                    Text(job.client)
-                        .font(.subheadline)
+        VStack {
+            TextField("Search Jobs", text: $searchText)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+
+            List {
+                ForEach(dataStore.jobs.filter {
+                    searchText.isEmpty || $0.name.localizedCaseInsensitiveContains(searchText)
+                }) { job in
+                    VStack(alignment: .leading) {
+                        Text(job.name).font(.headline)
+                        Text("Start: \(job.startDate.formatted(date: .abbreviated, time: .omitted))")
+                            .font(.subheadline)
+                    }
                 }
             }
         }
         .navigationTitle("Reports")
-    }
-}
-
-// MARK: - Preview
-struct ReportView_Previews: PreviewProvider {
-    @StateObject static var dataStore = DataStore()
-    static var previews: some View {
-        NavigationStack {
-            ReportView(dataStore: dataStore)
-        }
     }
 }

@@ -4,25 +4,19 @@ struct CrewMemberNameView: View {
     @Binding var crewMember: CrewMember
 
     var body: some View {
-        VStack {
-            TextField("Full Name", text: $crewMember.name)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
+        VStack(alignment: .leading) {
+            TextField("First Name", text: $crewMember.firstName)
+            TextField("Last Name", text: $crewMember.lastName)
         }
+        .textFieldStyle(.roundedBorder)
+        .padding()
     }
 }
 
 struct CrewMemberNameView_Previews: PreviewProvider {
-    @State static var sample = CrewMember(
-        id: UUID(),
-        name: "John Doe",
-        position: "Technician",
-        company: "PSI",
-        phone: "555-1234",
-        email: "john@example.com"
-    )
+    @State static var sampleMember = CrewMember(id: UUID(), firstName: "Bill", lastName: "Hart", email: "bill@example.com", phone: "555-5555", position: "Tech", company: "PSI")
 
     static var previews: some View {
-        CrewMemberNameView(crewMember: $sample)
+        CrewMemberNameView(crewMember: $sampleMember)
     }
 }

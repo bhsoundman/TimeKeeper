@@ -1,7 +1,13 @@
 import Foundation
 
-struct TimeStamp: Identifiable, Codable {
-    var id: UUID = UUID()
+enum StampType: String, Codable, CaseIterable {
+    case start
+    case end
+}
+
+struct TimeStamp: Identifiable, Codable, Equatable {
+    var id: UUID
     var date: Date
-    var time: String
+    var time: Date
+    var type: StampType
 }
